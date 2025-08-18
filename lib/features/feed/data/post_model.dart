@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Post {
   final String id;
   final String title;
   final String description;
   final String imageUrl;
-  final int likes;
+   int likes;
   final String author;
 
   Post({
@@ -15,9 +17,10 @@ class Post {
     required this.author,
   });
 
-  factory Post.fromFirestore(Map<String, dynamic> data) {
+  factory Post.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return Post(
-      id: data['id'] ?? '',
+      id: doc.id,
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
@@ -25,6 +28,7 @@ class Post {
       author: data['author'] ?? '',
     );
   }
+
 
   Map<String, dynamic> toFirestore() {
     return {

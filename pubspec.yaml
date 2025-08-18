@@ -41,6 +41,7 @@ dependencies:
   google_sign_in: ^6.3.0
   flutter_riverpod: ^2.6.1
   font_awesome_flutter: ^10.10.0
+  google_mobile_ads: ^6.0.0
 
 dev_dependencies:
   flutter_test:

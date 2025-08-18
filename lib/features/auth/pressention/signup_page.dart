@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_feed/features/auth/pressention/signin_page.dart';
-
-import '../../feed/pressention/feed_page.dart'; // 👈 import your FeedPage
+import '../../feed/pressention/feed_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
