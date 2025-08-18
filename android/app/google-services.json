@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "151968151208",
+    "project_id": "socialfeed-95b3b",
+    "storage_bucket": "socialfeed-95b3b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151968151208:android:c3269dc8b5e94e471ff49d",
+        "android_client_info": {
+          "package_name": "com.example.social_feed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151968151208-vpbur4vmilc1262tmqk2jct4r8dblpqj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.social_feed",
+            "certificate_hash": "33acd011397ccd06bbfb709f4c741e09ee3b728f"
+          }
+        },
+        {
+          "client_id": "151968151208-3l9hdn7ad5991rk3tt0hlofkhg7f1lc8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmvxFS6Css8lKttVBC3J_RYQ1R11tHZnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "151968151208-3l9hdn7ad5991rk3tt0hlofkhg7f1lc8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "151968151208-j4m5k0kdm034dlmq757bovadt6jovam8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.socialFeed"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
