@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_feed/features/auth/pressention/signin_page.dart';
 import '../../feed/pressention/feed_page.dart';
+import '../../feed/pressention/widgets/textfield.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -120,48 +121,38 @@ class _SignupPageState extends State<SignupPage> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        TextFormField(
+                        CustomTextFormField(
                           controller: _usernameController,
-                          decoration: _inputDecoration("Username"),
+                          hint: "Username",
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return "Please enter your username";
-                            }
-                            if (value.length < 3) {
-                              return "Username must be at least 3 characters";
-                            }
+                            if (value == null || value.trim().isEmpty) return "Please enter your username";
+                            if (value.length < 3) return "Username must be at least 3 characters";
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 16),
-                        TextFormField(
+
+                        CustomTextFormField(
                           controller: _emailController,
-                          decoration: _inputDecoration("Email"),
+                          hint: "Email",
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return "Please enter your email";
-                            }
-                            if (!RegExp(
-                              r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$",
-                            ).hasMatch(value)) {
-                              return "Enter a valid email";
-                            }
+                            if (value == null || value.trim().isEmpty) return "Please enter your email";
+                            if (!RegExp(r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$").hasMatch(value)) return "Enter a valid email";
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 16),
-                        TextFormField(
+
+                        CustomTextFormField(
                           controller: _passwordController,
-                          decoration: _inputDecoration("Password"),
-                          obscureText: true,
+                          hint: "Password",
+                          isPassword: true,
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please enter your password";
-                            }
-                            if (value.length < 6) {
-                              return "Password must be at least 6 characters";
-                            }
+                            if (value == null || value.isEmpty) return "Please enter your password";
+                            if (value.length < 6) return "Password must be at least 6 characters";
                             return null;
                           },
                         ),

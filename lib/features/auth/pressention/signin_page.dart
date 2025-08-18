@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../feed/pressention/widgets/textfield.dart';
+
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});
 
@@ -51,9 +53,9 @@ class _SigninPageState extends State<SigninPage> {
           const SnackBar(content: Text("✅ Signed in successfully")),
         );
       } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("❌ ${e.message}")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("❌ ${e.message}")));
       } finally {
         setState(() => _isLoading = false);
       }
@@ -72,7 +74,7 @@ class _SigninPageState extends State<SigninPage> {
       }
 
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -81,17 +83,17 @@ class _SigninPageState extends State<SigninPage> {
 
       await _auth.signInWithCredential(credential);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("✅ Signed in with Google")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("✅ Signed in with Google")));
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Firebase Error: ${e.message}")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("❌ Firebase Error: ${e.message}")));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Something went wrong: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("❌ Something went wrong: $e")));
     }
   }
 
@@ -120,34 +122,24 @@ class _SigninPageState extends State<SigninPage> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        TextFormField(
+                        CustomTextFormField(
                           controller: _emailController,
-                          decoration: _inputDecoration("Email"),
+                          hint: "Email",
+                          keyboardType: TextInputType.emailAddress,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return "Please enter your email";
-                            }
-                            if (!RegExp(
-                              r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$",
-                            ).hasMatch(value)) {
-                              return "Enter a valid email";
-                            }
+                            if (value == null || value.trim().isEmpty) return "Please enter your email";
+                            if (!RegExp(r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$").hasMatch(value)) return "Enter a valid email";
                             return null;
                           },
                         ),
                         const SizedBox(height: 16),
-
-                        TextFormField(
+                        CustomTextFormField(
                           controller: _passwordController,
-                          decoration: _inputDecoration("Password"),
-                          obscureText: true,
+                          hint: "Password",
+                          isPassword: true,
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Please enter your password";
-                            }
-                            if (value.length < 6) {
-                              return "Password must be at least 6 characters";
-                            }
+                            if (value == null || value.isEmpty) return "Please enter your password";
+                            if (value.length < 6) return "Password must be at least 6 characters";
                             return null;
                           },
                         ),
@@ -159,27 +151,26 @@ class _SigninPageState extends State<SigninPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            padding:
-                            const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
                           onPressed: _isLoading ? null : _submitForm,
                           child: _isLoading
                               ? const CircularProgressIndicator(
-                            color: Colors.white,
-                          )
-                              : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                                              "Sign In",
-                                                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
-                                                              ),
-                                                            ),
-                                ],
-                              ),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Sign In",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ),
                         const SizedBox(height: 16),
 
@@ -191,8 +182,7 @@ class _SigninPageState extends State<SigninPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            padding:
-                            const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
                           onPressed: _signInWithGoogle,
                           child: Row(

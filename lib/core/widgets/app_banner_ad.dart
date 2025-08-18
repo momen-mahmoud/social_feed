@@ -1,47 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+class BannerAdWidget extends StatefulWidget {
+  const BannerAdWidget({super.key});
 
-class AppBannerAd extends StatefulWidget {
-  const AppBannerAd({super.key});
   @override
-  State<AppBannerAd> createState() => _AppBannerAdState();
+  State<BannerAdWidget> createState() => _BannerAdWidgetState();
 }
 
-class _AppBannerAdState extends State<AppBannerAd> {
-  BannerAd? _ad;
-  bool _loaded = false;
+class _BannerAdWidgetState extends State<BannerAdWidget> {
+  late BannerAd _bannerAd;
+  bool _isAdLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    _ad = BannerAd(
+
+    _bannerAd = BannerAd(
+      adUnitId: '<YOUR_BANNER_AD_UNIT_ID>', // replace with your AdMob ID
       size: AdSize.banner,
-      // Google test banner ad unit ID. Replace with your real ID for production.
-      adUnitId: 'ca-app-pub-3940256099942544/6300978111',
+      request: const AdRequest(),
       listener: BannerAdListener(
-        onAdLoaded: (ad) => setState(() => _loaded = true),
+        onAdLoaded: (_) {
+          setState(() {
+            _isAdLoaded = true;
+          });
+        },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          debugPrint('BannerAd failed to load: $error');
+          print('Ad failed to load: $error');
         },
       ),
-      request: const AdRequest(),
-    )..load();
+    );
+
+    _bannerAd.load();
   }
 
   @override
   void dispose() {
-    _ad?.dispose();
+    _bannerAd.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_loaded || _ad == null) return const SizedBox.shrink();
-    return SizedBox(
-      width: _ad!.size.width.toDouble(),
-      height: _ad!.size.height.toDouble(),
-      child: AdWidget(ad: _ad!),
-    );
+    return _isAdLoaded
+        ? SizedBox(
+      width: _bannerAd.size.width.toDouble(),
+      height: _bannerAd.size.height.toDouble(),
+      child: AdWidget(ad: _bannerAd),
+    )
+        : const SizedBox.shrink();
   }
 }
