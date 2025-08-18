@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:social_feed/features/auth/pressention/signup_page.dart';
+import 'package:social_feed/features/feed/pressention/feed_page.dart';
 import 'package:social_feed/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      home: SignupPage(),
+      home: FeedPage(),
     );
   }
 }
