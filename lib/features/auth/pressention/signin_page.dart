@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import '../../feed/pressention/widgets/textfield.dart';
 
 class SigninPage extends StatefulWidget {
@@ -13,10 +12,8 @@ class SigninPage extends StatefulWidget {
 
 class _SigninPageState extends State<SigninPage> {
   final _formKey = GlobalKey<FormState>();
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool _isLoading = false;
@@ -40,32 +37,35 @@ class _SigninPageState extends State<SigninPage> {
     );
   }
 
-  /// ✅ Email/Password Sign-In
+  /// Email/Password Sign-In
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      try {
-        await _auth.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("✅ Signed in successfully")),
-        );
-      } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("❌ ${e.message}")));
-      } finally {
-        setState(() => _isLoading = false);
-      }
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      Navigator.pushReplacementNamed(context, '/feed');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("✅ Signed in successfully")),
+      );
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("❌ ${e.message}")));
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
-  /// ✅ Google Sign-In
+  /// Google Sign-In
   Future<void> _signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("❌ Google Sign-In cancelled")),
@@ -73,9 +73,7 @@ class _SigninPageState extends State<SigninPage> {
         return;
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -83,17 +81,17 @@ class _SigninPageState extends State<SigninPage> {
 
       await _auth.signInWithCredential(credential);
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("✅ Signed in with Google")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("✅ Signed in with Google")),
+      );
+
+      Navigator.pushReplacementNamed(context, '/feed');
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("❌ Firebase Error: ${e.message}")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("❌ Firebase Error: ${e.message}")));
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("❌ Something went wrong: $e")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("❌ Something went wrong: $e")));
     }
   }
 
@@ -115,7 +113,6 @@ class _SigninPageState extends State<SigninPage> {
                 ),
               ),
               const SizedBox(height: 30),
-
               Expanded(
                 child: SingleChildScrollView(
                   child: Form(
@@ -127,8 +124,13 @@ class _SigninPageState extends State<SigninPage> {
                           hint: "Email",
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) return "Please enter your email";
-                            if (!RegExp(r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$").hasMatch(value)) return "Enter a valid email";
+                            if (value == null || value.trim().isEmpty) {
+                              return "Please enter your email";
+                            }
+                            if (!RegExp(r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$")
+                                .hasMatch(value)) {
+                              return "Enter a valid email";
+                            }
                             return null;
                           },
                         ),
@@ -138,14 +140,18 @@ class _SigninPageState extends State<SigninPage> {
                           hint: "Password",
                           isPassword: true,
                           validator: (value) {
-                            if (value == null || value.isEmpty) return "Please enter your password";
-                            if (value.length < 6) return "Password must be at least 6 characters";
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your password";
+                            }
+                            if (value.length < 6) {
+                              return "Password must be at least 6 characters";
+                            }
                             return null;
                           },
                         ),
                         const SizedBox(height: 24),
-
                         ElevatedButton(
+                          onPressed: _isLoading ? null : _submitForm,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0B57D0),
                             shape: RoundedRectangleBorder(
@@ -153,29 +159,20 @@ class _SigninPageState extends State<SigninPage> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-                          onPressed: _isLoading ? null : _submitForm,
                           child: _isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "Sign In",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              ? const CircularProgressIndicator(color: Colors.white)
+                              : const Text(
+                            "Sign In",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 16),
-
-                        // ✅ Google Sign-In button
                         ElevatedButton(
+                          onPressed: _signInWithGoogle,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[300],
                             foregroundColor: Colors.black,
@@ -184,19 +181,7 @@ class _SigninPageState extends State<SigninPage> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-                          onPressed: _signInWithGoogle,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Sign in with Google",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+                          child: const Text("Sign in with Google"),
                         ),
                       ],
                     ),

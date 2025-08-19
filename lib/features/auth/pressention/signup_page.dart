@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_feed/features/auth/pressention/signin_page.dart';
-import '../../feed/pressention/feed_page.dart';
 import '../../feed/pressention/widgets/textfield.dart';
 
 class SignupPage extends StatefulWidget {
@@ -18,64 +17,6 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Future<void> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      if (googleUser == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("❌ Sign-in cancelled")),
-        );
-        return;
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      // ✅ Navigate to FeedPage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const FeedPage()),
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Firebase Error: ${e.message}")),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Something went wrong: $e")),
-      );
-    }
-  }
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        await _auth.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
-
-        // ✅ Navigate to FeedPage
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const FeedPage()),
-        );
-      } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("❌ ${e.message}")),
-        );
-      }
-    }
-  }
 
   @override
   void dispose() {
@@ -95,6 +36,54 @@ class _SignupPageState extends State<SignupPage> {
         borderSide: BorderSide.none,
       ),
     );
+  }
+
+  /// Sign up with email/password
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      Navigator.pushReplacementNamed(context, '/feed');
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("❌ ${e.message}")));
+    }
+  }
+
+  /// Sign in with Google
+  Future<void> signInWithGoogle() async {
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("❌ Sign-in cancelled")));
+        return;
+      }
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await _auth.signInWithCredential(credential);
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("✅ Signed in with Google")));
+
+      Navigator.pushReplacementNamed(context, '/feed');
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("❌ Firebase Error: ${e.message}")));
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("❌ Something went wrong: $e")));
+    }
   }
 
   @override
@@ -125,39 +114,49 @@ class _SignupPageState extends State<SignupPage> {
                           controller: _usernameController,
                           hint: "Username",
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) return "Please enter your username";
-                            if (value.length < 3) return "Username must be at least 3 characters";
+                            if (value == null || value.trim().isEmpty) {
+                              return "Please enter your username";
+                            }
+                            if (value.length < 3) {
+                              return "Username must be at least 3 characters";
+                            }
                             return null;
                           },
                         ),
-
                         const SizedBox(height: 16),
-
                         CustomTextFormField(
                           controller: _emailController,
                           hint: "Email",
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) return "Please enter your email";
-                            if (!RegExp(r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$").hasMatch(value)) return "Enter a valid email";
+                            if (value == null || value.trim().isEmpty) {
+                              return "Please enter your email";
+                            }
+                            if (!RegExp(r"^[\w-.]+@([\w-]+\.)+[\w]{2,4}$")
+                                .hasMatch(value)) {
+                              return "Enter a valid email";
+                            }
                             return null;
                           },
                         ),
-
                         const SizedBox(height: 16),
-
                         CustomTextFormField(
                           controller: _passwordController,
                           hint: "Password",
                           isPassword: true,
                           validator: (value) {
-                            if (value == null || value.isEmpty) return "Please enter your password";
-                            if (value.length < 6) return "Password must be at least 6 characters";
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your password";
+                            }
+                            if (value.length < 6) {
+                              return "Password must be at least 6 characters";
+                            }
                             return null;
                           },
                         ),
                         const SizedBox(height: 24),
                         ElevatedButton(
+                          onPressed: _submitForm,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0B57D0),
                             shape: RoundedRectangleBorder(
@@ -165,7 +164,6 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-                          onPressed: _submitForm,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
@@ -182,6 +180,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
+                          onPressed: signInWithGoogle,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[300],
                             foregroundColor: Colors.black,
@@ -190,7 +189,6 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-                          onPressed: signInWithGoogle,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
