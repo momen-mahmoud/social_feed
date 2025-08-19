@@ -60,7 +60,7 @@ class CustomBottomNavBar extends StatelessWidget {
             : null,
         child: Icon(
           icon,
-          size: 30, // bigger size if selected
+          size: 30,
         ),
       ),
       label: '',

@@ -32,7 +32,7 @@ class SuggestedUsersRow extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 scrollDirection: Axis.horizontal,
                 itemCount: users.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 4),
+                separatorBuilder: (context, i) => const SizedBox(width: 4),
                 itemBuilder: (context, i) {
                   final u = users[i];
                   return SizedBox(
@@ -42,7 +42,9 @@ class SuggestedUsersRow extends StatelessWidget {
                         CircleAvatar(
                           radius: 28,
                           backgroundImage: NetworkImage(u.avatarUrl),
-                          onBackgroundImageError: (_, __) {},
+                          onBackgroundImageError: (context, error) {
+                            debugPrint('Error loading avatar: $error');
+                          },
                         ),
                         const SizedBox(height: 6),
                         Text(

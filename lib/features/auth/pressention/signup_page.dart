@@ -26,19 +26,7 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  InputDecoration _inputDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      filled: true,
-      fillColor: Colors.blue[50],
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
-    );
-  }
 
-  /// Sign up with email/password
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -55,13 +43,15 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  /// Sign in with Google
   Future<void> signInWithGoogle() async {
     try {
+      await GoogleSignIn().signOut();
+
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("❌ Sign-in cancelled")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("❌ Sign-in cancelled")),
+        );
         return;
       }
 
@@ -71,18 +61,27 @@ class _SignupPageState extends State<SignupPage> {
         idToken: googleAuth.idToken,
       );
 
-      await _auth.signInWithCredential(credential);
+      final userCredential = await _auth.signInWithCredential(credential);
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("✅ Signed in with Google")));
+      if (userCredential.user != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("✅ Signed in with Google")),
+        );
 
-      Navigator.pushReplacementNamed(context, '/feed');
+        Navigator.pushReplacementNamed(context, '/feed');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("❌ Google sign-in failed")),
+        );
+      }
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("❌ Firebase Error: ${e.message}")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("❌ Firebase Error: ${e.message}")),
+      );
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("❌ Something went wrong: $e")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("❌ Something went wrong: $e")),
+      );
     }
   }
 

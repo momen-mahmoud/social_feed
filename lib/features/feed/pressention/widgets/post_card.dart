@@ -140,7 +140,6 @@ class _PostCardState extends State<PostCard> {
 
                     const SizedBox(height: 8),
 
-                    // Comments list
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: widget.post.comments
@@ -159,7 +158,6 @@ class _PostCardState extends State<PostCard> {
 
                     const SizedBox(height: 6),
 
-                    // Add comment input
                     Row(
                       children: [
                         Expanded(
@@ -167,9 +165,13 @@ class _PostCardState extends State<PostCard> {
                             controller: _commentController,
                             decoration: const InputDecoration(
                               hintText: 'Add a comment...',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
                               contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
+                                  horizontal: 10, vertical: 8),
                             ),
                           ),
                         ),
@@ -185,7 +187,7 @@ class _PostCardState extends State<PostCard> {
             ],
           ),
 
-          // Animated heart
+
           if (showHeart)
             AnimatedScale(
               scale: showHeart ? 1.5 : 0,

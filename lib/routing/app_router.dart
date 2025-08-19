@@ -4,7 +4,6 @@ import '../features/auth/pressention/signup_page.dart';
 import '../features/feed/pressention/feed_page.dart';
 import '../features/feed/pressention/post_screen.dart';
 
-
 class AppRoutes {
   static const String signUp = '/signup';
   static const String signIn = '/signin';
@@ -14,7 +13,7 @@ class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
     signUp: (context) => const SignupPage(),
     signIn: (context) => const SigninPage(),
-    feed: (context) =>  FeedPage(),
+    feed: (context) => const FeedPage(),
     post: (context) => const CreatePost(),
   };
 }

@@ -19,7 +19,6 @@ class _CreatePostState extends State<CreatePost> {
   File? image;
   final ImagePicker picker = ImagePicker();
 
-  // Example hashtags
   final List<String> hashtags = ["#Flutter", "#Coding", "#Tech", "#Trending","#JSON","#Dart","#Firebase","#Flutter","#Coding", "#Test", "#Data"];
   String? selectedHashtag;
 
@@ -48,7 +47,7 @@ class _CreatePostState extends State<CreatePost> {
 
       String? imageUrl;
       if (image != null) {
-        imageUrl = image!.path; // ⚠️ This is just a local path, not a real URL
+        imageUrl = image!.path;
       }
 
       await FirebaseFirestore.instance.collection("posts").add({
@@ -113,7 +112,7 @@ class _CreatePostState extends State<CreatePost> {
                 onUpload: getImage,
                 onRemove: () {
                   setState(() {
-                    image = null; // reset to dotted card
+                    image = null;
                   });
                 },
               ),
@@ -122,7 +121,6 @@ class _CreatePostState extends State<CreatePost> {
 
               const SizedBox(height: 20),
 
-              // Trending hashtags
               SizedBox(
                 height: 40,
                 child: ListView.builder(
@@ -137,15 +135,15 @@ class _CreatePostState extends State<CreatePost> {
                         label: Text(
                           tag,
                           style: TextStyle(
-                            color: Colors.black, // black text
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         selected: isSelected,
-                        selectedColor: Colors.grey[400], // darker grey when selected
-                        backgroundColor: Colors.grey[200], // normal grey
+                        selectedColor: Colors.grey[400],
+                        backgroundColor: Colors.grey[200],
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20), // rounded like button
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         onSelected: (val) {
                           setState(() {
