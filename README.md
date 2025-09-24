@@ -4,11 +4,6 @@ A Flutter application that demonstrates a modern social feed UI with interactive
 
 ---
 
-## 📸 Screenshots
-(Add screenshots or GIFs of your app here to showcase the UI)
-
----
-
 ## 🚀 Features
 - Beautiful and responsive UI built with Flutter  
 - Smooth navigation and animations  
