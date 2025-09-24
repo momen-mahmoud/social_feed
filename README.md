@@ -18,7 +18,8 @@ A Flutter application that demonstrates a modern social feed UI with interactive
 ---
 
 ## 📽️ Walkthrough Video
-[![Watch the walkthrough](https://cdn.loom.com/sessions/thumbnails/e2654c8e6b134608888c67c442fbee16-with-play.gif)](https://www.loom.com/share/e2654c8e6b134608888c67c442fbee16?sid=c9456add-9705-4f54-a105-bfd62503e0d1)
+👉 [Watch the walkthrough on Loom](https://www.loom.com/share/e2654c8e6b134608888c67c442fbee16?sid=c9456add-9705-4f54-a105-bfd62503e0d1)
+
 
 ---
 
